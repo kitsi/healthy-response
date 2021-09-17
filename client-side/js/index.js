@@ -94,26 +94,32 @@ function renderWorksheetFromProfile(worksheets) {
 
 function deleteWorksheet() {
   console.log('getting to delete???');
-  const deleteButton = document.querySelector('.delete__worksheet');
-  if (deleteButton != null) {
-    deleteButton.addEventListener("click", (event) => {
-      console.log("hello, anyone home?");
-      const worksheetId = event.target.parentElement.querySelector('.worksheetId').value;
-      console.log(worksheetId);
-      apiActions.deleteRequest('http://localhost:8080/profile/22/deleteWorksheet/' + worksheetId,
-       (profileInfo) => {
-         console.log(profileInfo),
-         apiActions.getRequest("http://localhost:8080/intake_profile", (user) => {
-          app.innerHTML = userWelcome(user);
-         });
-        //  navUserProfile();
-        // toProfilePageFromLogin();
-        // app.innerHTML = userWelcome(profileInfo);
-        // worksheets = profile[0].worksheets;
-        // renderWorksheetFromProfile(worksheets);
-        // deleteWorksheet();
+  const deleteButtons = document.querySelectorAll('.delete__worksheet');
+  if (deleteButtons != null) {
+    deleteButtons.forEach((deleteButton) => {
+      deleteButton.addEventListener("click", (event) => {
+        console.log("hello, anyone home?");
+        const worksheetId = event.target.parentElement.querySelector('.worksheetId').value;
+        console.log(worksheetId);
+        apiActions.deleteRequest('http://localhost:8080/profile/22/deleteWorksheet/' + worksheetId,
+         (profileInfo) => {
+           console.log(profileInfo),
+           apiActions.getRequest("http://localhost:8080/intake_profile", (user) => {
+            app.innerHTML = userWelcome(user);
+            worksheets = user[0].worksheets;
+            renderWorksheetFromProfile(worksheets);
+            deleteWorksheet();
+           });
+          //  navUserProfile();
+          // toProfilePageFromLogin();
+          // app.innerHTML = userWelcome(profileInfo);
+          // worksheets = profile[0].worksheets;
+          // renderWorksheetFromProfile(worksheets);
+          // deleteWorksheet();
+        });
       });
-    });
+    })
+    
   }
 
 }
@@ -486,6 +492,7 @@ function profileCardHome() {
     });
   });
 }
+
 function assessmentCardHome() {
   const assessmentCard = document.querySelector("#assessment");
   assessmentCard.addEventListener("click", () => {
@@ -493,6 +500,7 @@ function assessmentCardHome() {
     populateAssessmentMenu();
   });
 }
+
 function activitiesCardHome() {
   const activitiesCard = document.querySelector("#activities");
   activitiesCard.addEventListener("click", () => {
@@ -501,6 +509,7 @@ function activitiesCardHome() {
     });
   });
 }
+
 function inboxCardHome() {
   const inboxCard = document.querySelector("#messages");
   inboxCard.addEventListener("click", () => {
@@ -509,6 +518,7 @@ function inboxCardHome() {
     });
   });
 }
+
 function communityMessageBoardCard() {
   const communityCard = document.querySelector("#messageBoard");
   communityCard.addEventListener("click", () => {
@@ -517,12 +527,14 @@ function communityMessageBoardCard() {
     });
   });
 }
+
 function appointmentCard() {
   const appt = document.querySelector("#appointment");
   appt.addEventListener("click", () => {
     app.innerHTML = AppointmentPage();
   });
 }
+
 function resourcesCard() {
   const resources = document.querySelector("#resources");
   resources.addEventListener("click", () => {
@@ -541,6 +553,7 @@ function blogCard() {
     app.innerHTML = BlogPage();
   });
 }
+
 function home() {
   const homeElement = document.querySelector(".nav__list_home");
   homeElement.addEventListener("click", () => {
@@ -609,10 +622,15 @@ function activities() {
                 //   answer9: answer9,
                 //   answer10: answer10,
                 },
-                (personInfo) => console.log(personInfo),
-                apiActions.getRequest("http://localhost:8080/intake_profile", (user) => {
-                app.innerHTML = userWelcome(user);
-                })
+                (user) => {
+                  // apiActions.getRequest("http://localhost:8080/intake_profile", (user) => {
+                    app.innerHTML = userWelcome(user);
+                    worksheets = user[0].worksheets;
+                    renderWorksheetFromProfile(worksheets);
+                    deleteWorksheet();
+                  // })
+                }
+                
                 // (app.innerHTML = IntakeForm())
                 );
               });
@@ -714,6 +732,7 @@ function toProfilePageFromLogin() {
     footer();
   });
 }
+
 // function reset() {
 //   const resetElement = document.querySelector(".reset-button");
 //   resetElement.addEventListener("click", () => {
